@@ -20,3 +20,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::get('/user', 'UserController@getList')->name('home');
 
+Route::group(['middleware' => ApiToken::class], function () {
+    Route::post('post', 'PostController@store')->name('post:post:store');
+    Route::get('post', 'PostController@getList')->name('get:post:list');
+});
