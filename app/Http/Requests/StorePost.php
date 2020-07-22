@@ -24,8 +24,16 @@ class StorePost extends FormRequest
     public function rules()
     {
         return [
-            'title' => 'required|min:4|unique:posts',
+            'title' => 'bail|required|min:4|unique:posts',
             'body' => 'required',
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'title.required' => 'A title is required',
+            'body.required' => 'A message is required',
         ];
     }
 }
