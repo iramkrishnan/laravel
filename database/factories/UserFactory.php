@@ -2,6 +2,7 @@
 
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
 
+use App\Post;
 use App\User;
 use Faker\Generator as Faker;
 use Illuminate\Support\Str;
@@ -22,7 +23,7 @@ $factory->define(User::class, function (Faker $faker) {
         'name' => $faker->name,
         'email' => $faker->unique()->safeEmail,
         'email_verified_at' => now(),
-        'password' => bcrypt('1234678'),
+        'password' => bcrypt('12345678'),
         'remember_token' => Str::random(10),
         'api_token' => Str::random(40),
     ];
@@ -41,3 +42,22 @@ $factory->state(User::class, 'seller', [
 $factory->state(User::class, 'customer', [
     'role' => 'customer',
 ]);
+
+$factory->state(User::class, 'customer_with_posts', [
+    'role' => 'customer',
+])->afterCreatingState(User::class, 'customer_with_posts', function (User $user) {
+    factory(Post::class, 1)->make()
+        ->each(function (Post $post) use ($user) {
+            $post->user_id = $user->id;
+            $post->save();
+        });
+});
+
+
+$factory->afterCreatingState(User::class, 'seller', function (User $user) {
+    factory(Post::class, 2)->make()
+        ->each(function (Post $post) use ($user) {
+            $post->user_id = $user->id;
+            $post->save();
+        });
+    });
