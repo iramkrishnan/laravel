@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\NoSpecialChars;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StorePost extends FormRequest
@@ -24,16 +25,27 @@ class StorePost extends FormRequest
     public function rules()
     {
         return [
-            'title' => 'bail|required|min:4|unique:posts',
+            'title' => ['bail', 'required', 'unique:posts', 'max:255', new NoSpecialChars],
             'body' => 'required',
+            'sub_title' => 'exclude_unless:title,|required',
         ];
     }
 
     public function messages()
     {
         return [
-            'title.required' => 'A title is required',
-            'body.required' => 'A message is required',
+            'title.required' => 'A :attribute is required',
+            'body.required' => 'A :attribute is required',
+            'sub_title.required' => 'A :attribute is required',
+        ];
+    }
+
+    public function attributes()
+    {
+        return [
+            'title' => 'Title',
+            'body' => 'Body',
+            'sub_title' => 'Sub Title'
         ];
     }
 }
