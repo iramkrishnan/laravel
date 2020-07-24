@@ -13,10 +13,10 @@ class UserTableSeeder extends Seeder
      */
     public function run()
     {
+        factory(User::class)->create();
         factory(User::class)->times(1)->states('admin')->create();
         factory(User::class, 1)->states('seller')->create();
         factory(User::class, 1)->states('customer')->create();
-
         factory(User::class, 1)->states('customer_with_posts')->create();
 
         factory(User::class, 1)->states('admin')->create()
@@ -26,6 +26,14 @@ class UserTableSeeder extends Seeder
                         $post->user_id = $user->id;
                         $post->save();
                     });
+            });
+
+        factory(User::class, 1)
+            ->create(['role' => 'seller'])
+            ->each(function ($user) {
+                $user->posts()->createMany(
+                    factory(Post::class, 2)->make()->toArray()
+                );
             });
     }
 }

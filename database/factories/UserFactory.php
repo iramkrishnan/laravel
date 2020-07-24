@@ -27,11 +27,24 @@ $factory->define(User::class, function (Faker $faker) {
         'remember_token' => Str::random(10),
         'api_token' => Str::random(40),
     ];
+})->afterCreating(User::class, function ($user) {
+    factory(Post::class, 1)->make()
+        ->each(function (Post $post) use ($user) {
+            $post->user_id = $user->id;
+            $post->save();
+        });
 });
 
-$factory->state(User::class, 'admin', function () {
+$factory->afterCreating(User::class, function ($user) {
+    $user->posts()->save(factory(Post::class)->make([
+        'user_id' => $user->id,
+    ]));
+});
+
+$factory->state(User::class, 'admin', function ($faker) {
     return [
         'role' => 'admin',
+        'name' => $faker->name,
     ];
 });
 
@@ -55,9 +68,9 @@ $factory->state(User::class, 'customer_with_posts', [
 
 
 $factory->afterCreatingState(User::class, 'seller', function (User $user) {
-    factory(Post::class, 2)->make()
+    factory(Post::class, 1)->make()
         ->each(function (Post $post) use ($user) {
             $post->user_id = $user->id;
             $post->save();
         });
-    });
+});
