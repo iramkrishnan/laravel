@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Mail\WelcomeEmail;
 use App\Providers\RouteServiceProvider;
 use App\User;
+use App\UserProfile;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
@@ -75,6 +76,12 @@ class RegisterController extends Controller
         ]);
 
         Mail::to($user->email)->send(new WelcomeEmail());
+
+        $profile = new UserProfile();
+        $profile->name = $user->name;
+        $profile->role = 'customer';
+        $profile->bio = 'Developer';
+        $profile->save();
 
         return $user;
     }
