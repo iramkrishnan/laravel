@@ -42,7 +42,7 @@ class PostController extends Controller
         $attributes = [
             'title' => 'Title',
             'body' => 'Body',
-            'sub_title' => 'Sub Title'
+            'sub_title' => 'Sub Title',
         ];
 
         $validated = Validator::make($request->all(), $rules, $messages, $attributes);

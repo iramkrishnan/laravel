@@ -23,7 +23,7 @@ class SendWelcomeEmail implements ShouldQueue
     /**
      * Handle the event.
      *
-     * @param  NewUserRegisteredEvent  $event
+     * @param NewUserRegisteredEvent $event
      * @return void
      */
     public function handle(NewUserRegisteredEvent $event)
