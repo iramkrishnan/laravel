@@ -7,7 +7,7 @@ use App\UserProfile;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 
-class CreateUserProfile
+class CreateUserProfile implements ShouldQueue
 {
     /**
      * Create the event listener.
