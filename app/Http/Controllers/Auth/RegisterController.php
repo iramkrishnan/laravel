@@ -2,14 +2,12 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Events\NewUserRegisteredEvent;
 use App\Http\Controllers\Controller;
-use App\Mail\WelcomeEmail;
 use App\Providers\RouteServiceProvider;
 use App\User;
-use App\UserProfile;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
@@ -75,13 +73,7 @@ class RegisterController extends Controller
             'api_token' => Str::random(60),
         ]);
 
-        Mail::to($user->email)->send(new WelcomeEmail());
-
-        $profile = new UserProfile();
-        $profile->name = $user->name;
-        $profile->role = 'customer';
-        $profile->bio = 'Developer';
-        $profile->save();
+        event(new NewUserRegisteredEvent($user));
 
         return $user;
     }
