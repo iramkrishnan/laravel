@@ -25,12 +25,13 @@ class PostController extends Controller
 //        $request->validate([
 //            'title' => 'bail|required|unique:posts|max:255',
 //            'body.body' => ['required'],
+//            'sub_title' => 'exclude_unless:title,|required',
 //        ]);
 
         $rules = [
             'title' => ['bail', 'required', 'unique:posts', 'max:255', new NoSpecialChars],
             'body' => 'required',
-            'sub_title' => 'exclude_unless:title,|required',
+//            'sub_title' => 'exclude_unless:title,|required',
         ];
 
         $messages = [
@@ -46,6 +47,10 @@ class PostController extends Controller
         ];
 
         $validated = Validator::make($request->all(), $rules, $messages, $attributes);
+
+        $validated->sometimes('sub_title', 'required|max:255', function ($input) {
+            return $input->title == null;
+        });
 
         $validated->after(function ($validated) use ($request) {
             if (is_numeric($request['title'])) {
